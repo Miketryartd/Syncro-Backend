@@ -4,7 +4,6 @@ const cors = require('cors');
 const multer = require('multer');
 require('dotenv').config();
 
-
 const authRoutes = require('./routes/authRoutes');
 const fileRoutes = require('./routes/fileRoutes');
 const quizRoutes = require('./routes/quizRoutes');
@@ -29,24 +28,20 @@ if (STORAGE_MODE === 'local') {
     },
   });
   upload = multer({ storage, limits: { fileSize: 50 * 1024 * 1024 } });
-
 } else if (STORAGE_MODE === 'cloud') {
   const cloudinary = require('cloudinary').v2;
   const { CloudinaryStorage } = require('multer-storage-cloudinary');
-
   cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
     api_key: process.env.CLOUDINARY_CLOUD_API_KEY,
     api_secret: process.env.CLOUDINARY_CLOUD_API_SECRET
   });
-
   const storage = new CloudinaryStorage({
     cloudinary,
     params: { folder: 'user_uploads', allowed_formats: ['jpg', 'png', 'pdf'] },
   });
   upload = multer({ storage });
 }
-
 
 const allowedOrigins = [process.env.FRONTEND_URL_PROD, process.env.FRONTEND_URL];
 app.use(cors({
@@ -61,22 +56,15 @@ app.use(cors({
   credentials: true,
 }));
 
-
 mongoose.connect(process.env.MONGO_URI_SIKRET_KEY)
   .then(() => console.log("MongoDB connected"))
   .catch(err => console.log(err));
 
-
 app.get('/', (req, res) => res.send('Backend is running!'));
 
-
-app.use('/auth', authRoutes);
-app.use('/api/auth', authRoutes);          
-app.use('/files', fileRoutes(upload));     
-app.use('/post', fileRoutes(upload));      
-app.use('/quiz/quizzes', quizRoutes);
-app.use('/quiz', quizRoutes);
-app.use('/api', userRoutes);
-
+app.use('/', authRoutes);
+app.use('/', fileRoutes(upload));
+app.use('/', quizRoutes);
+app.use('/', userRoutes);
 
 app.listen(port, () => console.log(`Server running at http://localhost:${port}`));
