@@ -4,16 +4,7 @@ import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt';
 import { OAuth2Client } from 'google-auth-library';
 
-interface AuthenticatedRequest extends Request {
-  user: {
-    id: string;
-    name?: string;
-    email?: string;
-    picture?: string;
-    authProvider?: string;
-    [key: string]: any;
-  };
-}
+
 
 interface GooglePayload {
   sub: string;
@@ -40,7 +31,7 @@ interface UserDocument {
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-const getMe = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+const getMe = async (req: Request, res: Response): Promise<void> => {
   try {
     const user = await User.findById(req.user?.id).select('-password') as UserDocument;
 
