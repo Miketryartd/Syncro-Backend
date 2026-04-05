@@ -1,309 +1,239 @@
-Sycro
+# Sycro — Backend
 
-Sycro is a full-stack MERN web application built with modern authentication, file uploads, and third-party integrations. It uses secure JWT-based authentication, Google and GitHub OAuth login, cloud file storage, and a scalable deployment setup.
+A Node.js + Express REST API built with TypeScript, MongoDB, and modern authentication. Supports JWT auth, Google OAuth, file uploads via Multer, and cloud storage via Cloudinary.
 
-🧠 Tech Stack
-Frontend
+---
 
-React (TypeScript)
+## Tech Stack
 
-Axios – API requests
+**Runtime**
+- Node.js
+- TypeScript
+- tsx (development runner)
 
-JWT decode – Decode authentication tokens
+**Framework & Database**
+- Express.js
+- MongoDB Atlas
+- Mongoose
 
-Backend
+**Authentication**
+- JWT (jsonwebtoken)
+- Google OAuth2 (google-auth-library)
+- bcrypt (password hashing)
 
-Node.js
+**File Handling**
+- Multer
+- Cloudinary
+- multer-storage-cloudinary
 
-Express.js
+**Other**
+- CORS
+- dotenv
+- Nodemon
 
-Mongoose
+---
 
-MongoDB Atlas
+## Project Structure
 
-Zod – Request validation
+```
+backend/
+├── controllers/
+│   ├── authController.ts
+│   ├── filesController.ts
+│   ├── quizController.ts
+│   └── userController.ts
+├── middleware/
+│   └── auth.ts
+├── models/
+│   ├── Notification.ts
+│   ├── User.ts
+│   ├── User_files.ts
+│   ├── User_Quiz_Attempts.ts
+│   └── User_Quizes.ts
+├── routes/
+│   ├── authRoutes.ts
+│   ├── fileRoutes.ts
+│   ├── quizRoutes.ts
+│   └── userRoutes.ts
+├── server.ts
+├── types.ts
+├── tsconfig.json
+└── .env
+```
 
-bcryptjs – Password hashing
+---
 
-jsonwebtoken – JWT authentication
+## Getting Started
 
-Multer – File/photo uploads
+### 1. Clone the repository
 
-Cloudinary – Cloud file storage
-
-CORS
-
-dotenv
-
-Nodemon
-
-Authentication
-
-JWT (Access Tokens)
-
-Google OAuth2 (Google Console setup required)
-
-GitHub OAuth (GitHub API Sign-In)
-
-Deployment
-
-Frontend: Render
-
-Backend: Render
-
-Database: MongoDB Atlas
-
-📦 Features
-
-🔐 Secure authentication with JWT
-
-🔑 Google & GitHub social login
-
-🔒 Password hashing with bcrypt
-
-📂 Image/file uploads with Multer
-
-☁️ Cloudinary cloud storage integration
-
-🗄 MongoDB Atlas cloud database
-
-🛡 Input validation using Zod
-
-🌍 Production deployment ( Render)
-
-⚙️ Installation Guide (Local Development)
-1️⃣ Clone the Repository
+```bash
 git clone https://github.com/your-username/sycro.git
-cd sycro
-2️⃣ Backend Setup
+cd sycro/backend
+```
 
-Navigate to backend folder:
+### 2. Install dependencies
 
-cd backend
+```bash
 npm install
-Install Required Packages
-npm install express mongoose cors dotenv jsonwebtoken bcryptjs multer cloudinary axios zod jwt-decode
-npm install --save-dev nodemon
-3️⃣ Create .env File
+```
 
-Inside /backend:
+### 3. Create a `.env` file
 
+```env
 PORT=5000
-MONGO_URI=your_mongodb_atlas_uri
-JWT_SECRET=your_secret_key
+MONGO_URI_SIKRET_KEY=your_mongodb_atlas_uri
+JWT_SICKRET_KEY_LOL=your_jwt_secret
 
 CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_key
-CLOUDINARY_API_SECRET=your_secret
+CLOUDINARY_CLOUD_API_KEY=your_api_key
+CLOUDINARY_CLOUD_API_SECRET=your_api_secret
 
 GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_secret
 
-GITHUB_CLIENT_ID=your_github_client_id
-GITHUB_CLIENT_SECRET=your_github_secret
-4️⃣ MongoDB Atlas Setup
+FRONTEND_URL=http://localhost:5173
+FRONTEND_URL_PROD=your_production_frontend_url
 
-Create account at MongoDB Atlas
+STORAGE_MODE=local
+LOCAL_UPLOAD_PATH=uploads
+```
 
-Create a cluster
+### 4. Run in development
 
-Create database user
-
-Allow IP Access
-
-For local testing: add your IP
-
-For Render deployment: set IP access to 0.0.0.0/0
-
-Copy connection string into .env
-
-5️⃣ Google OAuth Setup
-
-Go to Google Cloud Console
-
-Create new project
-
-Enable Google OAuth2 API
-
-Configure OAuth Consent Screen
-
-Create OAuth Client ID
-
-Add redirect URI (your backend callback route)
-
-Add Client ID & Secret to .env
-
-6️⃣ GitHub OAuth Setup
-
-Go to GitHub Developer Settings
-
-Create new OAuth App
-
-Add Homepage URL
-
-Add Authorization Callback URL
-
-Copy Client ID & Secret into .env
-
-7️⃣ Run Backend
+```bash
 npm run dev
+```
+
+Server runs at `http://localhost:5000`
+
+---
+
+## Scripts
+
+| Script | Description |
+|---|---|
+| `npm run dev` | Runs server with nodemon and tsx |
+| `npm run build` | Compiles TypeScript to JavaScript |
+| `npm run start:prod` | Runs compiled output for production |
+
+---
+
+## API Routes
+
+### Auth
+| Method | Route | Description | Auth |
+|---|---|---|---|
+| POST | `/registration` | Register new user | No |
+| POST | `/login` | Login with email and password | No |
+| POST | `/api/auth/google` | Google OAuth login | No |
+| GET | `/auth/me` | Get current logged in user | Yes |
+
+### Files
+| Method | Route | Description | Auth |
+|---|---|---|---|
+| POST | `/files` | Upload files and cover photo | Yes |
+| GET | `/files-fetch` | Get all posts | No |
+| GET | `/post/:id` | Get single post | No |
+| POST | `/post/:id/upvote` | Upvote a post | Yes |
+| POST | `/post/:id/downvote` | Downvote a post | Yes |
+| POST | `/post/:postId/comments` | Add comment to post | Yes |
+| GET | `/post/:postId/comments` | Get comments on post | Yes |
+
+### Quizzes
+| Method | Route | Description | Auth |
+|---|---|---|---|
+| GET | `/quiz/quizzes` | Get all quizzes | Yes |
+| GET | `/quiz/quizzes/:id` | Get quiz by ID | Yes |
+| POST | `/quiz/create` | Create a new quiz | Yes |
+| POST | `/quiz/submit/:quizId` | Submit quiz answers | Yes |
+| GET | `/quiz/attempts/:quizId` | Get attempts for a quiz | Yes |
+
+### Users
+| Method | Route | Description | Auth |
+|---|---|---|---|
+| GET | `/api/search` | Search users by username | Yes |
+| POST | `/api/bookmark/:postId` | Bookmark a post | Yes |
+| POST | `/api/bookmark/quiz/:quizId` | Bookmark a quiz | Yes |
+| GET | `/api/bookmarks` | Get all bookmarks | Yes |
+| GET | `/api/bookmarks/ids` | Get bookmark IDs | Yes |
+| GET | `/api/notifications` | Get notifications | Yes |
+| PATCH | `/api/notifications/read` | Mark notifications as read | Yes |
+
+---
+
+## Authentication Flow
+
+### Regular Login
+1. User registers with email and password
+2. Password is hashed with bcrypt
+3. On login, JWT token is generated and returned
+4. Frontend stores token and sends it in `Authorization: Bearer <token>` header
+5. Protected routes verify the token via `auth.ts` middleware
+
+### Google OAuth
+1. Frontend sends Google ID token to `/api/auth/google`
+2. Backend verifies token using google-auth-library
+3. User is created or updated in MongoDB
+4. JWT is generated and returned to frontend
+
+---
+
+## File Upload Flow
+
+**Local mode** (`STORAGE_MODE=local`)
+- Files saved to `uploads/` folder on disk
+- File path stored in MongoDB
+
+**Cloud mode** (`STORAGE_MODE=cloud`)
+- Files sent directly to Cloudinary via multer-storage-cloudinary
+- Cloudinary URL stored in MongoDB
+
+---
+
+## MongoDB Atlas Setup
+
+1. Create account at [MongoDB Atlas](https://www.mongodb.com/atlas)
+2. Create a cluster and database user
+3. For local development: whitelist your IP
+4. For production on Render: set IP access to `0.0.0.0/0`
+5. Copy the connection string into your `.env`
+
+---
+
+## Google OAuth Setup
+
+1. Go to [Google Cloud Console](https://console.cloud.google.com)
+2. Create a new project
+3. Enable the Google OAuth2 API
+4. Configure the OAuth Consent Screen
+5. Create an OAuth Client ID
+6. Add your Client ID to `.env`
 
-Server should run on:
+---
 
-http://localhost:5000
-💻 Frontend Setup (React + TypeScript)
+## Deployment (Render)
 
-Navigate to frontend:
+1. Push backend to GitHub
+2. Create a new Web Service on Render
+3. Set the following:
+   - **Build Command:** `npm install && npm run build`
+   - **Start Command:** `node dist/server.js`
+4. Add all environment variables from `.env`
+5. Set MongoDB Atlas IP access to `0.0.0.0/0`
+6. Deploy
 
-cd frontend
-npm install
+---
 
-Install dependencies:
+## Security
 
-npm install axios jwt-decode
+- Passwords hashed with bcrypt
+- JWT middleware on all protected routes
+- Environment variables via dotenv
+- CORS restricted to allowed frontend origins
+- MongoDB Atlas IP restrictions
 
-Create .env in frontend:
+---
 
-VITE_API_URL=http://localhost:5000
-VITE_GOOGLE_CLIENT_ID=your_google_client_id
+## Author
 
-Start development server:
-
-npm run dev
-
-Frontend runs on:
-
-http://localhost:5173
-🔐 Authentication Flow
-Regular Login
-
-User registers
-
-Password is hashed using bcryptjs
-
-JWT token is generated using jsonwebtoken
-
-Token is sent to frontend
-
-Frontend stores token (localStorage or cookies)
-
-Protected routes verify token middleware
-
-Google / GitHub Login
-
-User clicks OAuth login
-
-Redirect to provider
-
-Provider returns auth code
-
-Backend exchanges code for access token
-
-User info retrieved via provider API
-
-JWT created and returned
-
-📂 File Upload Flow
-
-User selects file
-
-Multer handles file upload
-
-File sent to Cloudinary
-
-Cloudinary returns secure URL
-
-URL saved in MongoDB
-
-🌍 Deployment Guide
-Backend (Render)
-
-Push backend to GitHub
-
-Create new Web Service on Render
-
-Add environment variables
-
-Allow MongoDB Atlas IP access (0.0.0.0/0)
-
-Deploy
-
-Frontend (Render Static)
-
-Push frontend to GitHub
-
-Import project in Render
-
-Add environment variables
-
-Deploy
-
-📁 .gitignore
-
-Make sure to ignore:
-
-node_modules
-.env
-dist
-build
-🗂 Project Structure (MERN Format)
-sycro/
-│
-├── frontend/
-│   ├── src/
-│   ├── components/
-│   ├── pages/
-│   └── App.tsx
-│
-├── backend/
-│   ├── models/
-│   ├── routes/
-│   ├── middleware/
-│   ├── controllers/
-│   └── server.js
-│
-└── README.md
-🛡 Security Practices
-
-Password hashing (bcryptjs)
-
-JWT token verification middleware
-
-Zod input validation
-
-Environment variables with dotenv
-
-CORS configuration
-
-MongoDB Atlas IP restriction
-
-OAuth secure callback validation
-
-🧩 APIs & Services Used
-
-MongoDB Atlas
-
-Cloudinary
-
-Google OAuth2
-
-GitHub OAuth API
-
-📌 Future Improvements
-
-Refresh token implementation
-
-Role-based access control
-
-Rate limiting
-
-Email verification
-
-Two-factor authentication
-
-Admin dashboard
-
-👨‍💻 Author
-
-Developed by Mike
-Built with MERN stack and deployed using modern cloud infrastructure.
+Developed by Mike. Built with Node.js, Express, TypeScript, and MongoDB.
